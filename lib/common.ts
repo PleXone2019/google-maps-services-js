@@ -107,11 +107,13 @@ export type LatLngArray = [number, number];
 export type LatLngString = string;
 
 export interface LatLngLiteral {
+  kind: "LatLngLiteral";
   lat: number;
   lng: number;
 }
 
 export interface LatLngLiteralVerbose {
+  kind: "LatLngLiteralVerbose";
   latitude: number;
   longitude: number;
 }
@@ -131,6 +133,7 @@ export type LatLng =
 
 /** The bounds parameter defines the latitude/longitude coordinates of the southwest and northeast corners of this bounding box. */
 export interface LatLngBounds {
+  kind: "LatLngBounds";
   northeast: LatLngLiteral;
   southwest: LatLngLiteral;
 }
@@ -1116,6 +1119,7 @@ export type DirectionsReponseStatus =
  * the waypoints in the order they are specified, and the destination.
  */
 export interface GeocodedWaypoint {
+  kind: "GeoCodedWaypoint";
   /** indicates the status code resulting from the geocoding operation. */
   geocoder_status: GeocodedWaypointStatus;
   /**
