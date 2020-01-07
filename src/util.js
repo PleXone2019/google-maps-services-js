@@ -13,9 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */;
-
-/**
+ */ /**
  * Polyline encodes an array of LatLng objects.
  *
  * See {@link https://developers.google.com/maps/documentation/utilities/polylinealgorithm}
@@ -27,13 +25,12 @@
  * @return {string}
  */
 exports.encodePath = function(path) {
-
   var result = [];
   var start = [0, 0];
   var end;
 
   var encodePart = function(part) {
-    part = part < 0 ? ~(part << 1) : (part << 1);
+    part = part < 0 ? ~(part << 1) : part << 1;
     while (part >= 0x20) {
       result.push(String.fromCharCode((0x20 | (part & 0x1f)) + 63));
       part >>= 5;
@@ -43,13 +40,13 @@ exports.encodePath = function(path) {
 
   for (var i = 0, I = path.length || 0; i < I; ++i) {
     end = [Math.round(path[i].lat * 1e5), Math.round(path[i].lng * 1e5)];
-    encodePart(end[0] - start[0]);  // lat
-    encodePart(end[1] - start[1]);  // lng
+    encodePart(end[0] - start[0]); // lat
+    encodePart(end[1] - start[1]); // lng
     start = end;
   }
 
-  return result.join('');
-}
+  return result.join("");
+};
 
 /**
  * Decodes a polyline encoded string.
@@ -63,7 +60,6 @@ exports.encodePath = function(path) {
  * @return {LatLng[]}
  */
 exports.decodePath = function(encodedPath) {
-
   var len = encodedPath.length || 0;
   var path = new Array(Math.floor(encodedPath.length / 2));
   var index = 0;
@@ -79,7 +75,7 @@ exports.decodePath = function(encodedPath) {
       result += b << shift;
       shift += 5;
     } while (b >= 0x1f);
-    lat += ((result & 1) ? ~(result >> 1) : (result >> 1));
+    lat += result & 1 ? ~(result >> 1) : result >> 1;
 
     result = 1;
     shift = 0;
@@ -88,13 +84,13 @@ exports.decodePath = function(encodedPath) {
       result += b << shift;
       shift += 5;
     } while (b >= 0x1f);
-    lng += ((result & 1) ? ~(result >> 1) : (result >> 1));
+    lng += result & 1 ? ~(result >> 1) : result >> 1;
 
-    path[pointIndex] = {lat: lat * 1e-5, lng: lng * 1e-5};
+    path[pointIndex] = { lat: lat * 1e-5, lng: lng * 1e-5 };
   }
   path.length = pointIndex;
 
   return path;
 };
 
-exports.placesAutoCompleteSessionToken = require('uuid/v4');
+exports.placesAutoCompleteSessionToken = require("uuid/v4");

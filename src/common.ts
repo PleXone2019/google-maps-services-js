@@ -42,12 +42,6 @@ export interface RetryOptions {
   /** If a transient server error occurs, how long to wait before retrying the request, in milliseconds. (Default: 500 ms). */
   interval?: number;
 }
-
-export function createClient(
-  options: CreateClientOptionsWithPromise
-): GoogleMapsClientWithPromise;
-export function createClient(options: CreateClientOptions): GoogleMapsClient;
-
 /**
  * A callback function, which is called asynchronously when an API method completes.
  * The callback is given either:
@@ -107,13 +101,11 @@ export type LatLngArray = [number, number];
 export type LatLngString = string;
 
 export interface LatLngLiteral {
-  kind: "LatLngLiteral";
   lat: number;
   lng: number;
 }
 
 export interface LatLngLiteralVerbose {
-  kind: "LatLngLiteralVerbose";
   latitude: number;
   longitude: number;
 }
@@ -133,7 +125,6 @@ export type LatLng =
 
 /** The bounds parameter defines the latitude/longitude coordinates of the southwest and northeast corners of this bounding box. */
 export interface LatLngBounds {
-  kind: "LatLngBounds";
   northeast: LatLngLiteral;
   southwest: LatLngLiteral;
 }
@@ -1119,7 +1110,6 @@ export type DirectionsReponseStatus =
  * the waypoints in the order they are specified, and the destination.
  */
 export interface GeocodedWaypoint {
-  kind: "GeoCodedWaypoint";
   /** indicates the status code resulting from the geocoding operation. */
   geocoder_status: GeocodedWaypointStatus;
   /**

@@ -5,13 +5,17 @@
         "outDir": "dist",
         "sourceMap": true,
         "types": [
-            "node"
-        ]
+            "node",
+            "jest"
+        ],
+        "declaration": true,
+        "declarationDir": "./dist",
     },
     "include": [
-        "**/*.ts"
+        "src/**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/*.test.ts"
     ]
 }
