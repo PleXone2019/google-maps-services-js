@@ -1,4 +1,4 @@
-import { latLngToString, arrayToString, serializer, each } from "./serialize";
+import { latLngArrayToString, latLngToString, arrayToString, serializer, objectToString, latLngBoundsToString } from "./serialize";
 import { LatLngLiteral } from "./common";
 
 test("latLngToString is correct", () => {
@@ -10,6 +10,11 @@ test("latLngToString is correct", () => {
   expect(() => {
     latLngToString({} as LatLngLiteral);
   }).toThrow(TypeError);
+});
+
+test("latLngBoundsToString is correct", () => {
+  expect(latLngBoundsToString("")).toBe("");
+  expect(latLngBoundsToString({ southwest: { lat: 1, lng: 2 }, northeast: { lat: 3, lng: 4 } })).toBe("1,2|3,4");
 });
 
 test("arrayToSTring is correct", () => {
@@ -26,7 +31,7 @@ test("serializer", () => {
     serializer({ foo: [arrayToString("")] })({ foo: ["b", "a", "r"] })
   ).toBe("foo=bar");
   expect(
-    serializer({ foo: [each(latLngToString), arrayToString("|")] })({
+    serializer({ foo: latLngArrayToString })({
       foo: [
         [0, 1],
         [2, 3]
@@ -34,3 +39,10 @@ test("serializer", () => {
     })
   ).toBe("foo=0%2C1%7C2%2C3");
 });
+
+test("objectToString", () => {
+  expect(objectToString("|")("foo")).toBe("foo")
+  expect(objectToString("|")({c: "c", a: "a", b: "b"})).toBe("a:a|b:b|c:c")
+  expect(objectToString(",")({c: "c", a: "a", b: "b"})).toBe("a:a,b:b,c:c")
+
+})

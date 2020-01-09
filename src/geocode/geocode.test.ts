@@ -1,5 +1,5 @@
 import axios from "axios";
-import { elevation, defaultParamsSerializer, defaultUrl } from "./elevation";
+import { geocode, defaultParamsSerializer, defaultUrl } from "./geocode";
 
 jest.mock("axios");
 
@@ -9,10 +9,10 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-test("elevation should call axios correctly", () => {
-  const params = { locations: ["10,20"] };
+test("geocode should call axios correctly", () => {
+  const params = { address: "Seattle" };
 
-  elevation({ params: params }, mockedAxios);
+  geocode({ params: params }, mockedAxios);
 
   expect(mockedAxios).toHaveBeenCalledTimes(1);
   expect(mockedAxios).toHaveBeenCalledWith({

@@ -1,3 +1,36 @@
+export interface ResponseData {
+  /** contains metadata on the request. See Status Codes below. */
+  status: Status;
+  /**
+   * When the top-level status code is other than `OK`, this field contains more detailed information
+   * about the reasons behind the given status code.
+   */
+  error_message: string;
+}
+
+export type Status =
+  /** indicates the response contains a valid result. */
+  | "OK"
+  /** indicates that the provided request was invalid. */
+  | "INVALID_REQUEST"
+  /**
+   * indicates any of the following:
+   *  - The API key is missing or invalid.
+   *  - Billing has not been enabled on your account.
+   *  - A self-imposed usage cap has been exceeded.
+   *  - The provided method of payment is no longer valid (for example, a credit card has expired).
+   * See the [Maps FAQ](https://developers.google.com/maps/faq#over-limit-key-error) to learn how to fix this.
+   */
+  | "OVER_DAILY_LIMIT"
+  /** indicates the service has received too many requests from your application within the allowed time period. */
+  | "OVER_QUERY_LIMIT"
+  /** indicates that the service denied use of the Distance Matrix service by your application. */
+  | "REQUEST_DENIED"
+  /** indicates a Distance Matrix request could not be processed due to a server error. The request may succeed if you try again. */
+  | "UNKNOWN_ERROR";
+
+
+
 // Type definitions for @google/maps 0.5
 // Project: https://github.com/googlemaps/google-maps-services-js
 // Definitions by: Indri Muska <https://github.com/indrimuska>
@@ -996,7 +1029,7 @@ export type UnitSystem =
 
 export interface DirectionsResponse {
   /** contains metadata on the request. */
-  status: DirectionsReponseStatus;
+  status: Status | DirectionsReponseStatus;
   /**
    * contains an array with details about the geocoding of origin, destination and waypoints.
    *
@@ -1880,12 +1913,6 @@ export interface FindPlaceRequest {
   locationbias?: string;
 }
 
-/** A Find Place response contains only the data types that were specified using the fields parameter, plus `html_attributions`. */
-export interface FindPlaceFromTextResponse {
-  status: SearchResponseStatus;
-  candidates: Array<Partial<PlaceSearchResult>>;
-}
-
 export interface PlaceSearchResponse {
   /** contains metadata on the request. */
   status: SearchResponseStatus;
@@ -1920,7 +1947,7 @@ export type SearchResponseStatus =
   | "OK"
   /**
    * indicates that the search was successful but returned no results.
-   * This may occur if the search was passed a latlng in a remote location.
+   * This may occur if the search was passed a latLng in a remote location.
    */
   | "ZERO_RESULTS"
   /** indicates that you are over your quota. */
@@ -2074,186 +2101,7 @@ export interface OpeningHoursTime {
  *  - Radar Searches do not return any photo information.
  *  - A Details request will return up to ten photo elements.
  */
-export interface PlacePhoto {
-  /** a string used to identify the photo when you perform a Photo request. */
-  photo_reference: string;
-  /** the maximum height of the image. */
-  height: number;
-  /** the maximum width of the image. */
-  width: number;
-  /** contains any required attributions. This field will always be present, but may be empty. */
-  html_attributions: string[];
-}
 
-export type PlaceIdScope =
-  /**
-   * The place ID is recognised by your application only.
-   * This is because your application added the place, and the place has not yet passed the moderation process.
-   */
-  | "APP"
-  /** The place ID is available to other applications and on Google Maps. */
-  | "GOOGLE";
-
-export interface AlternativePlaceId {
-  /**
-   * The most likely reason for a place to have an alternative place ID is if your application adds a place and receives
-   * an application-scoped place ID, then later receives a Google-scoped place ID after passing the moderation process.
-   */
-  place_id: string;
-  /**
-   * The scope of an alternative place ID will always be `APP`,
-   * indicating that the alternative place ID is recognised by your application only.
-   */
-  scope: "APP";
-}
-
-/**
- * Table 1: Types supported in place search and addition
- *
- * You can use the following values in the types filter for place searches and when adding a place.
- *
- * @see https://developers.google.com/places/web-service/supported_types#table1
- */
-export type PlaceType1 =
-  | "accounting"
-  | "airport"
-  | "amusement_park"
-  | "aquarium"
-  | "art_gallery"
-  | "atm"
-  | "bakery"
-  | "bank"
-  | "bar"
-  | "beauty_salon"
-  | "bicycle_store"
-  | "book_store"
-  | "bowling_alley"
-  | "bus_station"
-  | "cafe"
-  | "campground"
-  | "car_dealer"
-  | "car_rental"
-  | "car_repair"
-  | "car_wash"
-  | "casino"
-  | "cemetery"
-  | "church"
-  | "city_hall"
-  | "clothing_store"
-  | "convenience_store"
-  | "courthouse"
-  | "dentist"
-  | "department_store"
-  | "doctor"
-  | "electrician"
-  | "electronics_store"
-  | "embassy"
-  | "fire_station"
-  | "florist"
-  | "funeral_home"
-  | "furniture_store"
-  | "gas_station"
-  | "gym"
-  | "hair_care"
-  | "hardware_store"
-  | "hindu_temple"
-  | "home_goods_store"
-  | "hospital"
-  | "insurance_agency"
-  | "jewelry_store"
-  | "laundry"
-  | "lawyer"
-  | "library"
-  | "liquor_store"
-  | "local_government_office"
-  | "locksmith"
-  | "lodging"
-  | "meal_delivery"
-  | "meal_takeaway"
-  | "mosque"
-  | "movie_rental"
-  | "movie_theater"
-  | "moving_company"
-  | "museum"
-  | "night_club"
-  | "painter"
-  | "park"
-  | "parking"
-  | "pet_store"
-  | "pharmacy"
-  | "physiotherapist"
-  | "plumber"
-  | "police"
-  | "post_office"
-  | "real_estate_agency"
-  | "restaurant"
-  | "roofing_contractor"
-  | "rv_park"
-  | "school"
-  | "shoe_store"
-  | "shopping_mall"
-  | "spa"
-  | "stadium"
-  | "storage"
-  | "store"
-  | "subway_station"
-  | "supermarket"
-  | "synagogue"
-  | "taxi_stand"
-  | "train_station"
-  | "transit_station"
-  | "travel_agency"
-  | "veterinary_care"
-  | "zoo";
-
-/**
- * Table 2: Additional types returned by the Places service
- *
- * The following types may be returned in the results of a place search, in addition to the types in table 1 above.
- * For more details on these types, refer to [Address Types](https://developers.google.com/maps/documentation/geocoding/intro#Types)
- * in Geocoding Responses.
- *
- * @see https://developers.google.com/places/web-service/supported_types#table2
- */
-export type PlaceType2 =
-  | "administrative_area_level_1"
-  | "administrative_area_level_2"
-  | "administrative_area_level_3"
-  | "administrative_area_level_4"
-  | "administrative_area_level_5"
-  | "colloquial_area"
-  | "country"
-  | "establishment"
-  | "finance"
-  | "floor"
-  | "food"
-  | "general_contractor"
-  | "geocode"
-  | "health"
-  | "intersection"
-  | "locality"
-  | "natural_feature"
-  | "neighborhood"
-  | "place_of_worship"
-  | "political"
-  | "point_of_interest"
-  | "post_box"
-  | "postal_code"
-  | "postal_code_prefix"
-  | "postal_code_suffix"
-  | "postal_town"
-  | "premise"
-  | "room"
-  | "route"
-  | "street_address"
-  | "street_number"
-  | "sublocality"
-  | "sublocality_level_4"
-  | "sublocality_level_5"
-  | "sublocality_level_3"
-  | "sublocality_level_2"
-  | "sublocality_level_1"
-  | "subpremise";
 
 export interface GeocodingRequest {
   /**
@@ -2367,7 +2215,7 @@ export type GeocodingResponseStatus =
   | "OVER_QUERY_LIMIT"
   /** indicates that your request was denied. */
   | "REQUEST_DENIED"
-  /** generally indicates that the query (`address`, `components` or `latlng`) is missing. */
+  /** generally indicates that the query (`address`, `components` or ``) is missing. */
   | "INVALID_REQUEST"
   /** indicates that the request could not be processed due to a server error. The request may succeed if you try again. */
   | "UNKNOWN_ERROR";
@@ -2377,79 +2225,6 @@ export type GeocodingResponseStatus =
  * Even if the geocoder returns no results (such as if the address doesn't exist) it still returns an empty `results` array.
  * (XML responses consist of zero or more `<result>` elements.)
  */
-export interface GeocodingResult {
-  /**
-   * array indicates the type of the returned result.
-   * This array contains a set of zero or more tags identifying the type of feature returned in the result.
-   * For example, a geocode of "Chicago" returns "locality" which indicates that "Chicago" is a city,
-   * and also returns "political" which indicates it is a political entity.
-   */
-  types: AddressType[];
-  /**
-   * is a string containing the human-readable address of this location.
-   *
-   * Often this address is equivalent to the postal address. Note that some countries, such as the United Kingdom,
-   * do not allow distribution of true postal addresses due to licensing restrictions.
-   *
-   * The formatted address is logically composed of one or more address components.
-   * For example, the address "111 8th Avenue, New York, NY" consists of the following components: "111" (the street number),
-   * "8th Avenue" (the route), "New York" (the city) and "NY" (the US state).
-   *
-   * Do not parse the formatted address programmatically. Instead you should use the individual address components,
-   * which the API response includes in addition to the formatted address field.
-   */
-  formatted_address: string;
-  /**
-   * is an array containing the separate components applicable to this address.
-   *
-   * Note the following facts about the `address_components[]` array:
-   *  - The array of address components may contain more components than the `formatted_address`.
-   *  - The array does not necessarily include all the political entities that contain an address,
-   *    apart from those included in the `formatted_address`. To retrieve all the political entities that contain a specific address,
-   *    you should use reverse geocoding, passing the latitude/longitude of the address as a parameter to the request.
-   *  - The format of the response is not guaranteed to remain the same between requests.
-   *    In particular, the number of `address_components` varies based on the address requested and can change
-   *    over time for the same address. A component can change position in the array.
-   *    The type of the component can change. A particular component may be missing in a later response.
-   */
-  address_components: AddressComponent[];
-  /**
-   * is an array denoting all the localities contained in a postal code.
-   * This is only present when the result is a postal code that contains multiple localities.
-   */
-  postcode_localities: string[];
-  /** address geometry. */
-  geometry: AddressGeometry;
-  /**
-   * is an encoded location reference, derived from latitude and longitude coordinates,
-   * that represents an area: 1/8000th of a degree by 1/8000th of a degree (about 14m x 14m at the equator) or smaller.
-   * Plus codes can be used as a replacement for street addresses in places where they do not exist
-   * (where buildings are not numbered or streets are not named).
-   *
-   * The plus code is formatted as a global code and a compound code:
-   *  - `global_code` is a 4 character area code and 6 character or longer local code (849VCWC8+R9).
-   *  - `compound_code` is a 6 character or longer local code with an explicit location (CWC8+R9, Mountain View, CA, USA).
-   * Typically, both the global code and compound code are returned. However, if the result is in a remote location
-   * (for example, an ocean or desert) only the global code may be returned.
-   *
-   * @see [Open Location Code](https://en.wikipedia.org/wiki/Open_Location_Code)
-   * @see [plus codes](https://plus.codes/)
-   */
-  plus_code: PlusCode;
-  /**
-   * indicates that the geocoder did not return an exact match for the original request,
-   * though it was able to match part of the requested address.
-   * You may wish to examine the original request for misspellings and/or an incomplete address.
-   *
-   * Partial matches most often occur for street addresses that do not exist within the locality you pass in the request.
-   * Partial matches may also be returned when a request matches two or more locations in the same locality.
-   * For example, "21 Henr St, Bristol, UK" will return a partial match for both Henry Street and Henrietta Street.
-   * Note that if a request includes a misspelled address component, the geocoding service may suggest an alternative address.
-   * Suggestions triggered in this way will also be marked as a partial match.
-   */
-  partial_match: boolean;
-  /** is a unique identifier that can be used with other Google APIs. */
-  place_id: string;
 }
 
 export type GeocodingAddressComponentType =
@@ -2692,7 +2467,7 @@ export interface NearestRoadsResponse {
 
 export interface PlaceDetailsRequest {
   /** A textual identifier that uniquely identifies a place, returned from a Place Search. */
-  placeid: string;
+  place_id: string;
   /**
    * The language code, indicating in which language the results should be returned, if possible.
    * Note that some fields may not be available in the requested language.
@@ -2773,7 +2548,7 @@ export type PlaceDetailsResponseStatus =
   /** indicates a server-side error; trying again may be successful. */
   | "UNKNOWN_ERROR"
   /**
-   * indicates that the referenced location (placeid) was valid but no longer refers to a valid result.
+   * indicates that the referenced location (place_id) was valid but no longer refers to a valid result.
    * This may occur if the establishment is no longer in business.
    */
   | "ZERO_RESULTS"
@@ -2790,9 +2565,9 @@ export type PlaceDetailsResponseStatus =
   | "OVER_QUERY_LIMIT"
   /** indicates that your request was denied, generally because an invalid key parameter. */
   | "REQUEST_DENIED"
-  /** generally indicates that the query (placeid) is missing. */
+  /** generally indicates that the query (place_id) is missing. */
   | "INVALID_REQUEST"
-  /** indicates that the referenced location (placeid) was not found in the Places database. */
+  /** indicates that the referenced location (place_id) was not found in the Places database. */
   | "NOT_FOUND";
 
 /** When the Places service returns results from a details request, it places them within a single `result`. */
@@ -2940,50 +2715,6 @@ export interface PlaceDetailsResult {
   website: string;
 }
 
-export interface PlaceReview {
-  /**
-   * contains a collection of `AspectRating` objects, each of which provides a rating of a single attribute of the establishment.
-   * The first object in the collection is considered the primary aspect.
-   */
-  aspects: AspectRating[];
-  /** the name of the user who submitted the review. Anonymous reviews are attributed to "A Google user". */
-  author_name: string;
-  /** the URL to the user's Google Maps Local Guides profile, if available. */
-  author_url?: string;
-  /**
-   * an IETF language code indicating the language used in the user's review.
-   * This field contains the main language tag only, and not the secondary tag indicating country or region.
-   * For example, all the English reviews are tagged as 'en', and not 'en-AU' or 'en-UK' and so on.
-   */
-  language: string;
-  /** the user's overall rating for this place. This is a whole number, ranging from 1 to 5. */
-  rating: number;
-  /**
-   * the user's review. When reviewing a location with Google Places, text reviews are considered optional.
-   * Therefore, this field may by empty. Note that this field may include simple HTML markup.
-   * For example, the entity reference `&amp;` may represent an ampersand character.
-   */
-  text: string;
-  /** the time that the review was submitted, measured in the number of seconds since since midnight, January 1, 1970 UTC. */
-  time: string;
-}
-
-export interface AspectRating {
-  /** the name of the aspect that is being rated. */
-  type: AspectRatingType;
-  /** the user's rating for this particular aspect, from 0 to 3. */
-  rating: number;
-}
-
-export type AspectRatingType =
-  | "appeal"
-  | "atmosphere"
-  | "decor"
-  | "facilities"
-  | "food"
-  | "overall"
-  | "quality"
-  | "service";
 
 export interface PlacesRequest {
   /**
@@ -3123,31 +2854,7 @@ export interface PlaceAutocompleteRequest {
  * The exception is that you can safely mix the geocode and establishment types,
  * but note that this will have the same effect as specifying no types.
  */
-export type PlaceAutocompleteType =
-  /**
-   * instructs the Place Autocomplete service to return only geocoding results, rather than business results.
-   * Generally, you use this request to disambiguate results where the location specified may be indeterminate.
-   */
-  | "geocode"
-  /**
-   * instructs the Place Autocomplete service to return only geocoding results with a precise address.
-   * Generally, you use this request when you know the user will be looking for a fully specified address.
-   */
-  | "address"
-  /** instructs the Place Autocomplete service to return only business results. */
-  | "establishment"
-  /**
-   * the `(regions)` type collection instructs the Places service to return any result matching the following types:
-   *  - `locality`
-   *  - `sublocality`
-   *  - `postal_code`
-   *  - `country`
-   *  - `administrative_area_level_1`
-   *  - `administrative_area_level_2`
-   */
-  | "(regions)"
-  /** the (cities) type collection instructs the Places service to return results that match `locality` or `administrative_area_level_3`. */
-  | "(cities)";
+
 
 export interface PlaceAutocompleteResponse {
   /** contains metadata on the request. */
@@ -3166,27 +2873,6 @@ export interface PlaceAutocompleteResponse {
 }
 
 /**
- * The `status` field within the Place Autocomplete response object contains the status of the request,
- * and may contain debugging information to help you track down why the Place Autocomplete request failed.
- */
-export type PlaceAutocompleteResponseStatus =
-  /** indicates that no errors occurred and at least one result was returned. */
-  | "OK"
-  /**
-   * indicates that the search was successful but returned no results.
-   * This may occur if the search was passed a bounds in a remote location.
-   */
-  | "ZERO_RESULTS"
-  /** indicates that you are over your quota. */
-  | "OVER_QUERY_LIMIT"
-  /** indicates that your request was denied, generally because of lack of an invalid key parameter. */
-  | "REQUEST_DENIED"
-  /** generally indicates that the input parameter is missing. */
-  | "INVALID_REQUEST"
-  /** indicates a server-side error; trying again may be successful. */
-  | "UNKNOWN_ERROR";
-
-/**
  * When the Places service returns JSON results from a search, it places them within a `predictions` array.
  * Even if the service returns no results (such as if the `location` is remote) it still returns an empty `predictions` array.
  * XML responses consist of zero or more `<prediction>` elements.
@@ -3195,35 +2881,6 @@ export type PlaceAutocompleteResponseStatus =
  * in search results or place details. This is because Autocomplete returns only Google-scoped place IDs.
  * It does not return app-scoped place IDs that have not yet been accepted into the Google Places database.
  */
-export interface PlaceAutocompleteResult {
-  /**
-   * contains the human-readable name for the returned result.
-   * For `establishment` results, this is usually the business name.
-   */
-  description: string;
-  /**
-   * is a textual identifier that uniquely identifies a place.
-   * To retrieve information about the place, pass this identifier in the `placeId` field of a Places API request.
-   */
-  place_id: string;
-  /**
-   * contains an array of terms identifying each section of the returned description
-   * (a section of the description is generally terminated with a comma).
-   */
-  terms: PredictionTerm[];
-  /**
-   * contains an array of types that apply to this place.
-   * For example: `[ "political", "locality" ]` or `[ "establishment", "geocode" ]`.
-   */
-  types: AddressType[];
-  /**
-   * contains an array with `offset` value and `length`. These describe the location of
-   * the entered term in the prediction result text, so that the term can be highlighted if desired.
-   */
-  matched_substrings: PredictionSubstring[];
-  /** contains details on the prediction. */
-  structured_formatting: StructuredFormatting;
-}
 
 export interface PredictionTerm {
   /** containing the text of the term. */
@@ -3495,97 +3152,7 @@ export interface PlaceRadarRequest {
   type?: AddressType;
 }
 
-/**
- * If both `result_type` and `location_type` filters are present then the API returns only those results that match both the
- * `result_type` and the `location_type` values. If none of the filter values are acceptable, the API returns `ZERO_RESULTS`.
- */
-export interface ReverseGeocodingRequest {
-  /** The latitude and longitude values specifying the location for which you wish to obtain the closest, human-readable address. */
-  latlng?: LatLng;
-  /**
-   * The place ID of the place for which you wish to obtain the human-readable address.
-   * The place ID is a unique identifier that can be used with other Google APIs.
-   * For example, you can use the `placeID` returned by the Roads API to get the address for a snapped point.
-   * The place ID may only be specified if the request includes an API key or a Google Maps APIs Premium Plan client ID.
-   */
-  place_id?: string;
-  /**
-   * The language in which to return results.
-   *  - Google often updates the supported languages, so this list may not be exhaustive.
-   *  - If `language` is not supplied, the geocoder attempts to use the preferred language as specified in the
-   *    `Accept-Language` header, or the native language of the domain from which the request is sent.
-   *  - The geocoder does its best to provide a street address that is readable for both the user and locals.
-   *    To achieve that goal, it returns street addresses in the local language, transliterated to a script readable by the user
-   *    if necessary, observing the preferred language. All other addresses are returned in the preferred language.
-   *    Address components are all returned in the same language, which is chosen from the first component.
-   *  - If a name is not available in the preferred language, the geocoder uses the closest match.
-   */
-  language?: Language;
-  /**
-   * A filter of one or more address types, separated by a pipe (`|`).
-   * If the parameter contains multiple address types, the API returns all addresses that match any of the types.
-   * A note about processing: The `result_type` parameter does not restrict the search to the specified address type(s).
-   * Rather, the `result_type` acts as a post-search filter: the API fetches all results for the specified `latlng`,
-   * then discards those results that do not match the specified address type(s).
-   * Note: This parameter is available only for requests that include an API key or a client ID.
-   */
-  result_type?: AddressType;
-  /**
-   * A filter of one or more location types, separated by a pipe (`|`).
-   * If the parameter contains multiple location types, the API returns all addresses that match any of the types.
-   * A note about processing: The `location_type` parameter does not restrict the search to the specified location type(s).
-   * Rather, the `location_type` acts as a post-search filter: the API fetches all results for the specified `latlng`,
-   * then discards those results that do not match the specified location type(s).
-   * Note: This parameter is available only for requests that include an API key or a client ID.
-   */
-  location_type?: ReverseGeocodingLocationType;
-}
 
-export type ReverseGeocodingLocationType =
-  /** returns only the addresses for which Google has location information accurate down to street address precision. */
-  | "ROOFTOP"
-  /**
-   * returns only the addresses that reflect an approximation (usually on a road) interpolated between two precise points
-   * (such as intersections). An interpolated range generally indicates that rooftop geocodes are unavailable for a street address.
-   */
-  | "RANGE_INTERPOLATED"
-  /** returns only geometric centers of a location such as a polyline (for example, a street) or polygon (region). */
-  | "GEOMETRIC_CENTER"
-  /** returns only the addresses that are characterized as approximate. */
-  | "APPROXIMATE";
-
-export type ReverseGeocodingResponse = GeocodingResponse<
-  ReverseGeocodingResponseStatus
->;
-
-/**
- * The `"status"` field within the Geocoding response object contains the status of the request,
- * and may contain debugging information to help you track down why reverse geocoding is not working.
- */
-export type ReverseGeocodingResponseStatus =
-  /** indicates that no errors occurred and at least one address was returned. */
-  | "OK"
-  /**
-   * indicates that the reverse geocoding was successful but returned no results.
-   * This may occur if the geocoder was passed a latlng in a remote location.
-   */
-  | "ZERO_RESULTS"
-  /** indicates that you are over your quota. */
-  | "OVER_QUERY_LIMIT"
-  /**
-   * indicates that the request was denied.
-   * Possibly because the request includes a `result_type` or `location_type` parameter but does not include
-   * an API key or client ID.
-   */
-  | "REQUEST_DENIED"
-  /**
-   * generally indicates one of the following:
-   *  - The query (`address`, `components` or `latlng`) is missing.
-   *  - An invalid `result_type` or `location_type` was given.
-   */
-  | "INVALID_REQUEST"
-  /** indicates that the request could not be processed due to a server error. The request may succeed if you try again. */
-  | "UNKNOWN_ERROR";
 
 export interface SnappedSpeedLimitsRequest {
   /**

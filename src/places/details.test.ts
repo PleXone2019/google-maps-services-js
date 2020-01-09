@@ -1,5 +1,5 @@
 import axios from "axios";
-import { elevation, defaultParamsSerializer, defaultUrl } from "./elevation";
+import { placeDetails, defaultParamsSerializer, defaultUrl } from "./details";
 
 jest.mock("axios");
 
@@ -9,10 +9,10 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-test("elevation should call axios correctly", () => {
-  const params = { locations: ["10,20"] };
+test("autocomplete should call axios correctly", () => {
+  const params = { place_id: "notarealid"};
 
-  elevation({ params: params }, mockedAxios);
+  placeDetails({ params: params }, mockedAxios);
 
   expect(mockedAxios).toHaveBeenCalledTimes(1);
   expect(mockedAxios).toHaveBeenCalledWith({

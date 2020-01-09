@@ -1,1 +1,1 @@
-export { directions } from "./directions";
+export const version = "1.0.0";

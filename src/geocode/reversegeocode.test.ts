@@ -1,5 +1,9 @@
 import axios from "axios";
-import { elevation, defaultParamsSerializer, defaultUrl } from "./elevation";
+import {
+  reverseGeocode,
+  defaultParamsSerializer,
+  defaultUrl
+} from "./reversegeocode";
 
 jest.mock("axios");
 
@@ -9,10 +13,15 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-test("elevation should call axios correctly", () => {
-  const params = { locations: ["10,20"] };
+test("reverseGeocode should call axios correctly", () => {
+  const params = {
+    latLng: {
+      lat: 60.168997,
+      lng: 24.9433353
+    }
+  };
 
-  elevation({ params: params }, mockedAxios);
+  reverseGeocode({ params: params }, mockedAxios);
 
   expect(mockedAxios).toHaveBeenCalledTimes(1);
   expect(mockedAxios).toHaveBeenCalledWith({
